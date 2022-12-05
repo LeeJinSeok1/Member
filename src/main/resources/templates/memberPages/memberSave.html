@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>memberSave</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.rtl.min.css}">
+
+    <script th:src="@{/js/jqurey.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        #saveForm{
+            width: 800px;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+  <form action="/memberSave" method="post" class="form-control" name="saveForm">
+    <input type="text" name="memberEmail" placeholder="이메일" class="form-control" id="saveEmail"> <br>
+    <input type="text" name="memberPassword" placeholder="비밀번호" class="form-control" > <br>
+    <input type="text" name="memberName" placeholder="이름" class="form-control"> <br>
+    <input type="text" name="memberAge" placeholder="나이" class="form-control"> <br>
+    <input type="text" name="memberPhone" placeholder="전화번호" class="form-control"> <br>
+    <input type="button" value="가입완료" class="btn btn-primary" onclick="emailCheck()" > <br>
+  </form>
+</div>
+
+</body>
+<script th:inline="javascript">
+    const emailCheck = () => {
+        const memberEmail = document.getElementById("saveEmail").value;
+
+
+        // axios({
+        //     method:"post",
+        //     url:"/emailCk",
+        //     params: {
+        //         memberEmail:memberEmail
+        //     }
+        // }).then(res => {
+        //     console.log("then 함수");
+        //     console.log(res);
+        //         document.saveForm.submit();
+        // }
+        // ).catch(res => {
+        //         console.log("catch 함수");
+        //         console.log(res);
+        //     alert("이메일이 중복입니다.")
+        //     }
+        // )
+
+        $.ajax({
+            type:"post",
+            url:"/emailCk",
+            data:{
+                memberEmail:memberEmail
+            },
+            dateType: "text",
+            success: function (ck) {
+                if(ck=="no"){
+                    alert("이메일이 중복입니다.")
+                }else{
+                    document.saveForm.submit();
+                }
+
+            },
+            error: function (ck) {
+
+            }
+        })
+
+
+    }
+
+</script>
+</html>

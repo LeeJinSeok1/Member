@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>memberList</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.rtl.min.css}">
+    <script th:src="@{/js/jqurey.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<table>
+    <tr>
+        <th>id</th>
+        <th>이메일</th>
+        <th>비밀번호</th>
+        <th>이름</th>
+        <th>나이</th>
+        <th>전화번호</th>
+        <th>상세조회</th>
+        <th>삭제</th>
+        <th>조회(ajax)</th>
+        <th>삭제(ajax)</th>
+
+    </tr>
+    <tr th:each="member: ${members}" >
+        <td th:text="${member.id}"></td>
+        <td th:text="${member.memberEmail}"></td>
+        <td th:text="${member.memberPassword}"></td>
+        <td th:text="${member.memberName}"></td>
+        <td th:text="${member.memberAge}"></td>
+        <td th:text="${member.memberPhone}"></td>
+        <td><a th:href="@{|/memberDetail/${member.id}|}">조회</a></td>
+        <td><a th:href="@{|/memberDelete/${member.id}|}">삭제</a></td>
+        <td><button class="btn btn-primary" th:onclick="findMember([[${member.id}]])">조회</button></td>
+        <td><button class="btn btn-primary" th:onclick="deleteMember([[${member.id}]])">삭제</button></td>
+        <td></td>
+    </tr>
+</table>
+    <div id="detailArea">
+
+    </div>
+</body>
+<script th:inline="javascript">
+    const findMember = (findId) => {
+        console.log("id",findId)
+        const detailArea = document.getElementById("detailArea");
+        axios({
+            method:"get",
+            url:"/memberAjax/"+findId,
+        }).then(res =>{
+            console.log("then",res)
+            console.log("회원객체",res.data)
+            console.log("회원이메일",res.data.memberEmail)
+            const member = res.data;
+               let result =
+                "        <table class=\"table table-striped\">\n" +
+                "            <tr>\n" +
+                "                <th>id</th>\n" +
+                "                <td>"+ member.id +"</td>\n" +
+                "            </tr>\n" +
+                "            <tr>\n" +
+                "                <th>email</th>\n" +
+                "                <td>" + member.memberEmail + "</td>\n" +
+                "            </tr>\n" +
+                "            <tr>\n" +
+                "                <th>password</th>\n" +
+                "                <td>" + member.memberPassword + "</td>\n" +
+                "            </tr>\n" +
+                "            <tr>\n" +
+                "                <th>name</th>\n" +
+                "                <td> " + member.memberName + "</td>\n" +
+                "            </tr>\n" +
+                "            <tr>\n" +
+                "                <th>age</th>\n" +
+                "                <td>" + member.memberAge + "</td>\n" +
+                "            </tr>\n" +
+                "        </table>";
+            detailArea.innerHTML= result;
+        }).catch(res => {
+            console.log("catch",err)
+        })
+
+    }
+
+    const deleteMember = (deleteId) => {
+        axios({
+            method: "delete",
+            url:"/member/"+deleteId
+        }).then(res=>{
+            alert("삭제성공")
+            location.href="/memberDetail/";
+        }).catch(res=>{
+            alert("삭제실패")
+
+        })
+    }
+</script>
+</html>

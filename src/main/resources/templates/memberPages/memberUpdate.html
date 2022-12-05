@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.rtl.min.css}">
+    <script th:src="@{/js/jqurey.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+ <div class="container">
+     <form action="/memberUpdate" method="post" class="form-control" name="updateForm">
+         id<input type="text" name="id" th:value="${member.id}" readonly class="form-control" >
+         email<input type="text" name="memberEmail" th:value="${member.memberEmail}" class="form-control">
+         pass<input type="text" name="memberPassword"  class="form-control" id="memberPass">
+         name<input type="text" name="memberName" th:value="${member.memberName}" class="form-control">
+         age<input type="text" name="memberAge" th:value="${member.memberAge}" class="form-control">
+         Phone<input type="text" name="memberPhone" th:value="${member.memberPhone}" class="form-control">
+         <input type="button" value="수정" class="btn btn-primary" onclick="update()">
+         <input type="button" value="axios수정" class="btn btn-primary" onclick="updateAxios()">
+
+     </form>
+ </div>
+ <script th:inline="javascript">
+     const update =() =>{
+         const passwordDB =[[${member.memberPassword}]];
+         const passwordInput = document.getElementById("memberPass").value;
+         if(passwordDB == passwordInput) {
+             document.updateForm.submit();
+         }else{
+             alert("비밀번호가 틀립니다.")
+         }
+     }
+
+     const updateAxios=() => {
+         const passwordDB =[[${member.memberPassword}]];
+         const passwordInput = document.getElementById("memberPass").value;
+         const id =document.getElementsByName("id")[0].value;
+         const email =document.getElementsByName("memberEmail")[0].value;
+         const pass =document.getElementsByName("memberPassword")[0].value;
+         const name =document.getElementsByName("memberName")[0].value;
+         const age =document.getElementsByName("memberAge")[0].value;
+         const phone =document.getElementsByName("memberPhone")[0].value;
+         if(passwordDB == passwordInput) {
+         axios({
+             method:"put",
+             url:"/member/"+id,
+             data: {
+                 id:id,
+                 memberEmail:email,
+                 memberPassword: pass,
+                 memberName:name,
+                 memberAge:age,
+                 memberPhone:phone
+             }
+         }).then(res =>{
+             console.log("수정성공")
+             location.href="/index"
+         }).catch(res=> {
+             console.log("수정실패")
+         })
+         }else{
+             alert("비밀번호가 틀립니다.")
+         }
+
+     }
+
+ </script>
+
+</body>
+</html>
